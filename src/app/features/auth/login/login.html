@@ -1,0 +1,94 @@
+<div class="login-container">
+
+  <div class="login-card">
+
+    <div class="logo">
+
+      <h1>QueueLess</h1>
+
+      <p>Staff Login</p>
+
+    </div>
+
+
+    <form
+      #loginForm="ngForm"
+      (ngSubmit)="login()">
+
+
+      <!-- MOBILE -->
+
+      <div class="form-group">
+
+        <label>
+          Mobile Number
+        </label>
+
+        <input
+          type="text"
+          name="mobileNo"
+          [(ngModel)]="loginRequest.mobileNo"
+          placeholder="Enter mobile number"
+          autocomplete="username"
+        />
+
+      </div>
+
+
+      <!-- PASSWORD -->
+
+      <div class="form-group">
+
+        <label>
+          Password
+        </label>
+
+        <input
+          type="password"
+          name="password"
+          [(ngModel)]="loginRequest.password"
+          placeholder="Enter password"
+          autocomplete="current-password"
+        />
+
+      </div>
+
+
+      <!-- ERROR -->
+
+      @if (errorMessage) {
+
+        <div class="error-message">
+
+          {{ errorMessage }}
+
+        </div>
+
+      }
+
+
+      <!-- LOGIN -->
+
+      <button
+        type="submit"
+        [disabled]="loading">
+
+        @if (loading) {
+
+          Logging in...
+
+        }
+        @else {
+
+          Login
+
+        }
+
+      </button>
+
+
+    </form>
+
+  </div>
+
+</div>

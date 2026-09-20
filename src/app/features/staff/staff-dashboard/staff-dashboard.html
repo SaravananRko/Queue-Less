@@ -1,0 +1,259 @@
+<div class="dashboard">
+
+  <!-- HEADER -->
+
+  <div class="header">
+
+    <div>
+      <h1>QueueLess</h1>
+      <p>Staff Queue Dashboard</p>
+    </div>
+
+    <div class="staff-info">
+      Staff Dashboard
+    </div>
+
+  </div>
+
+
+  <!-- CURRENT + NEXT -->
+
+  <div class="queue-cards">
+
+    <!-- NOW SERVING -->
+
+    <div class="queue-card current">
+
+      <div class="card-title">
+        NOW SERVING
+      </div>
+
+
+      @if (currentTicket) {
+
+        <div class="token-number">
+          #{{ currentTicket.tokenNo }}
+        </div>
+
+        <div class="customer-name">
+          Customer
+        </div>
+
+        <div class="status">
+          {{ currentTicket.status }}
+        </div>
+
+
+        <div class="actions">
+
+          <button
+            class="complete-button"
+            (click)="complete()">
+
+            Complete
+
+          </button>
+
+
+          <button
+            class="skip-button"
+            (click)="skip()">
+
+            Skip
+
+          </button>
+
+        </div>
+
+      }
+      @else {
+
+        <div class="empty">
+
+          No customer currently serving
+
+        </div>
+
+      }
+
+    </div>
+
+
+    <!-- NEXT CUSTOMER -->
+
+    <div class="queue-card next">
+
+      <div class="card-title">
+        NEXT
+      </div>
+
+
+      @if (nextTicket) {
+
+        <div class="token-number">
+          #{{ nextTicket.tokenNo }}
+        </div>
+
+        <div class="status">
+          WAITING
+        </div>
+
+      }
+      @else {
+
+        <div class="empty">
+
+          No customers waiting
+
+        </div>
+
+      }
+
+    </div>
+
+  </div>
+
+
+  <!-- CALL NEXT BUTTON -->
+
+  <div class="call-next-container">
+
+    <button
+      class="call-next-button"
+      [disabled]="loading"
+      (click)="callNext()">
+
+      @if (loading) {
+
+        Calling...
+
+      }
+      @else {
+
+        CALL NEXT
+
+      }
+
+    </button>
+
+  </div>
+
+
+  <!-- STATISTICS -->
+
+  <div class="stats">
+
+    <div class="stat-card">
+
+      <span>Waiting</span>
+
+      <strong>
+        {{ waitingTickets.length }}
+      </strong>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <span>Current Token</span>
+
+      <strong>
+        {{ currentTicket?.tokenNo ?? '-' }}
+      </strong>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <span>Next Token</span>
+
+      <strong>
+        {{ nextTicket?.tokenNo ?? '-' }}
+      </strong>
+
+    </div>
+
+  </div>
+
+
+  <!-- WAITING QUEUE -->
+
+  <div class="waiting-section">
+
+    <h2>Waiting Queue</h2>
+
+
+    @if (waitingTickets.length === 0) {
+
+      <div class="no-data">
+
+        No customers waiting.
+
+      </div>
+
+    }
+    @else {
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>Token</th>
+
+            <th>Status</th>
+
+            <th>Joined Time</th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody>
+
+          @for (
+            ticket of waitingTickets;
+            track ticket.ticketId
+          ) {
+
+            <tr>
+
+              <td>
+                #{{ ticket.tokenNo }}
+              </td>
+
+
+              <td>
+
+                <span class="waiting-badge">
+
+                  {{ ticket.status }}
+
+                </span>
+
+              </td>
+
+
+              <td>
+
+                {{ ticket.joinedTime | date:'shortTime' }}
+
+              </td>
+
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    }
+
+  </div>
+
+</div>
