@@ -1,259 +1,81 @@
-<div class="dashboard">
+<div style="padding: 40px; color: black; background: white;">
 
-  <!-- HEADER -->
+  <h1>QueueLess Staff Dashboard</h1>
 
-  <div class="header">
+  <hr>
 
-    <div>
-      <h1>QueueLess</h1>
-      <p>Staff Queue Dashboard</p>
-    </div>
+  <h2>API DATA</h2>
 
-    <div class="staff-info">
-      Staff Dashboard
-    </div>
+  <p>
+    Queue ID:
+    <strong>{{ queueStatus?.queueId }}</strong>
+  </p>
 
+  <p>
+    Current Token:
+    <strong>{{ queueStatus?.currentTokenNo }}</strong>
+  </p>
+
+  <p>
+    Last Token:
+    <strong>{{ queueStatus?.lastTokenNo }}</strong>
+  </p>
+
+  <p>
+    Waiting Count:
+    <strong>{{ queueStatus?.waitingCount }}</strong>
+  </p>
+
+  <p>
+    Queue Status:
+    <strong>{{ queueStatus?.queueStatus }}</strong>
+  </p>
+
+  <hr>
+
+  <h2>Expected Dashboard</h2>
+
+  <div style="font-size: 30px;">
+    NOW SERVING:
+    <strong>{{ queueStatus?.currentTokenNo }}</strong>
   </div>
 
+  <br>
 
-  <!-- CURRENT + NEXT -->
-
-  <div class="queue-cards">
-
-    <!-- NOW SERVING -->
-
-    <div class="queue-card current">
-
-      <div class="card-title">
-        NOW SERVING
-      </div>
-
-
-      @if (currentTicket) {
-
-        <div class="token-number">
-          #{{ currentTicket.tokenNo }}
-        </div>
-
-        <div class="customer-name">
-          Customer
-        </div>
-
-        <div class="status">
-          {{ currentTicket.status }}
-        </div>
-
-
-        <div class="actions">
-
-          <button
-            class="complete-button"
-            (click)="complete()">
-
-            Complete
-
-          </button>
-
-
-          <button
-            class="skip-button"
-            (click)="skip()">
-
-            Skip
-
-          </button>
-
-        </div>
-
-      }
-      @else {
-
-        <div class="empty">
-
-          No customer currently serving
-
-        </div>
-
-      }
-
-    </div>
-
-
-    <!-- NEXT CUSTOMER -->
-
-    <div class="queue-card next">
-
-      <div class="card-title">
-        NEXT
-      </div>
-
-
-      @if (nextTicket) {
-
-        <div class="token-number">
-          #{{ nextTicket.tokenNo }}
-        </div>
-
-        <div class="status">
-          WAITING
-        </div>
-
-      }
-      @else {
-
-        <div class="empty">
-
-          No customers waiting
-
-        </div>
-
-      }
-
-    </div>
-
+  <div style="font-size: 30px;">
+    WAITING:
+    <strong>{{ queueStatus?.waitingCount }}</strong>
   </div>
 
+  <br>
 
-  <!-- CALL NEXT BUTTON -->
-
-  <div class="call-next-container">
-
-    <button
-      class="call-next-button"
-      [disabled]="loading"
-      (click)="callNext()">
-
-      @if (loading) {
-
-        Calling...
-
-      }
-      @else {
-
-        CALL NEXT
-
-      }
-
-    </button>
-
+  <div style="font-size: 30px;">
+    LAST TOKEN:
+    <strong>{{ queueStatus?.lastTokenNo }}</strong>
   </div>
 
+  <br>
 
-  <!-- STATISTICS -->
-
-  <div class="stats">
-
-    <div class="stat-card">
-
-      <span>Waiting</span>
-
-      <strong>
-        {{ waitingTickets.length }}
-      </strong>
-
-    </div>
-
-
-    <div class="stat-card">
-
-      <span>Current Token</span>
-
-      <strong>
-        {{ currentTicket?.tokenNo ?? '-' }}
-      </strong>
-
-    </div>
-
-
-    <div class="stat-card">
-
-      <span>Next Token</span>
-
-      <strong>
-        {{ nextTicket?.tokenNo ?? '-' }}
-      </strong>
-
-    </div>
-
+  <div style="font-size: 30px;">
+    STATUS:
+    <strong>{{ queueStatus?.queueStatus }}</strong>
   </div>
 
+  <hr>
 
-  <!-- WAITING QUEUE -->
+  <h3>Raw Response</h3>
 
-  <div class="waiting-section">
+  <pre>{{ queueStatus | json }}</pre>
 
-    <h2>Waiting Queue</h2>
+  <br>
 
+  <button
+    type="button"
+    (click)="callNext()"
+    [disabled]="loading || queueStatus?.waitingCount === 0">
 
-    @if (waitingTickets.length === 0) {
+    {{ loading ? 'Calling...' : 'CALL NEXT' }}
 
-      <div class="no-data">
-
-        No customers waiting.
-
-      </div>
-
-    }
-    @else {
-
-      <table>
-
-        <thead>
-
-          <tr>
-
-            <th>Token</th>
-
-            <th>Status</th>
-
-            <th>Joined Time</th>
-
-          </tr>
-
-        </thead>
-
-
-        <tbody>
-
-          @for (
-            ticket of waitingTickets;
-            track ticket.ticketId
-          ) {
-
-            <tr>
-
-              <td>
-                #{{ ticket.tokenNo }}
-              </td>
-
-
-              <td>
-
-                <span class="waiting-badge">
-
-                  {{ ticket.status }}
-
-                </span>
-
-              </td>
-
-
-              <td>
-
-                {{ ticket.joinedTime | date:'shortTime' }}
-
-              </td>
-
-            </tr>
-
-          }
-
-        </tbody>
-
-      </table>
-
-    }
-
-  </div>
+  </button>
 
 </div>

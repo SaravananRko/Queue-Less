@@ -1,93 +1,62 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-import {
-  Staff,
-  QueueTicket
-} from '../staff';
+import { Staff, QueueStatus } from '../staff';
 
 @Component({
-  standalone: true,
   selector: 'app-staff-dashboard',
+  standalone: true,
   imports: [CommonModule],
-  templateUrl: './staff-dashboard.html',
-  styleUrl: './staff-dashboard.css',
+  templateUrl: './staff-dashboard.html'
 })
-
 export class StaffDashboard implements OnInit {
 
   private staffService = inject(Staff);
 
   queueId = 1;
 
-  currentTicket: QueueTicket | null = null;
-
-  waitingTickets: QueueTicket[] = [];
+  queueStatus: QueueStatus | null = null;
 
   loading = false;
 
-
   ngOnInit(): void {
 
-    this.loadQueue();
+    console.log('STAFF DASHBOARD LOADED');
 
+    this.loadStatus();
   }
 
+  loadStatus(): void {
 
-  loadQueue(): void {
+    console.log('Loading queue:', this.queueId);
 
     this.staffService
-      .getWaitingTickets(this.queueId)
+      .getStatus(this.queueId)
       .subscribe({
 
-        next: (tickets) => {
+        next: (response) => {
 
-          this.waitingTickets = tickets;
+          console.log('API RESPONSE:', response);
 
-          this.loadCurrentTicket();
+          this.queueStatus = response;
+
+          console.log(
+            'queueStatus assigned:',
+            this.queueStatus
+          );
 
         },
 
         error: (error) => {
 
           console.error(
-            'Failed to load waiting tickets',
+            'QUEUE STATUS ERROR:',
             error
           );
 
         }
 
       });
-
   }
-
-
-  loadCurrentTicket(): void {
-
-    this.staffService
-      .getQueue(this.queueId)
-      .subscribe({
-
-        next: (queue) => {
-
-          this.currentTicket =
-            queue.currentTicket ?? null;
-
-        },
-
-        error: (error) => {
-
-          console.error(
-            'Failed to load current ticket',
-            error
-          );
-
-        }
-
-      });
-
-  }
-
 
   callNext(): void {
 
@@ -104,106 +73,28 @@ export class StaffDashboard implements OnInit {
         next: (response) => {
 
           console.log(
-            'Next customer called',
+            'CALL NEXT RESPONSE:',
             response
           );
 
-          this.loadQueue();
+          this.loading = false;
+
+          // Reload latest queue data
+          this.loadStatus();
+
+        },
+
+        error: (error) => {
+
+          console.error(
+            'CALL NEXT ERROR:',
+            error
+          );
 
           this.loading = false;
 
-        },
-
-        error: (error) => {
-
-          console.error(
-            'Call next failed',
-            error
-          );
-
-          this.loading = false;
-
         }
 
       });
-
   }
-
-
-  complete(): void {
-
-    if (!this.currentTicket) {
-      return;
-    }
-
-    this.staffService
-      .complete(this.currentTicket.ticketId)
-      .subscribe({
-
-        next: () => {
-
-          this.currentTicket = null;
-
-          this.loadQueue();
-
-        },
-
-        error: (error) => {
-
-          console.error(
-            'Complete failed',
-            error
-          );
-
-        }
-
-      });
-
-  }
-
-
-  skip(): void {
-
-    if (!this.currentTicket) {
-      return;
-    }
-
-    this.staffService
-      .skip(this.currentTicket.ticketId)
-      .subscribe({
-
-        next: () => {
-
-          this.currentTicket = null;
-
-          this.loadQueue();
-
-        },
-
-        error: (error) => {
-
-          console.error(
-            'Skip failed',
-            error
-          );
-
-        }
-
-      });
-
-  }
-
-
-  get nextTicket(): QueueTicket | null {
-
-    if (this.waitingTickets.length === 0) {
-
-      return null;
-
-    }
-
-    return this.waitingTickets[0];
-
-  }
-
 }

@@ -203,3 +203,40 @@ td {
   }
 
 }
+
+
+.token-number {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: black !important;
+  font-size: 48px;
+  font-weight: bold;
+}
+
+.token-label {
+  display: block !important;
+  visibility: visible !important;
+  color: black !important;
+}
+
+.queue-info {
+  display: flex;
+  gap: 40px;
+  padding: 20px;
+}
+
+.queue-info div {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+pre {
+  display: block;
+  padding: 20px;
+  background: #f5f5f5;
+  color: black;
+  text-align: left;
+  white-space: pre-wrap;
+}

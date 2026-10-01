@@ -2,67 +2,53 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-export interface QueueTicket {
-  ticketId: number;
+export interface QueueStatus {
   queueId: number;
-  userId: number;
-  tokenNo: number;
-  status: string;
-  joinedTime: string;
-  calledTime?: string;
-  servingTime?: string;
-  completedTime?: string;
-  cancelledTime?: string;
+  businessId: number;
+  serviceId: number;
+  currentTokenNo: number;
+  lastTokenNo: number;
+  waitingCount: number;
+  myTokenNo: number | null;
+  myStatus: string | null;
+  position: number | null;
+  estimatedWaitMinutes: number;
+  queueStatus: string;
 }
+
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class Staff {
+
   private http = inject(HttpClient);
 
-private apiUrl = 'https://localhost:7001/api/queue';
+  private apiUrl = 'https://localhost:7091/api/Queue';
 
-
-  getQueue(queueId: number): Observable<any> {
-
-    return this.http.get<any>(
-      `${this.apiUrl}/${queueId}`
+  getStatus(queueId: number): Observable<QueueStatus> {
+    return this.http.get<QueueStatus>(
+      `${this.apiUrl}/${queueId}/status`
     );
-
-  }
-
-  getWaitingTickets(queueId: number): Observable<QueueTicket[]> {
-
-    return this.http.get<QueueTicket[]>(
-      `${this.apiUrl}/${queueId}/waiting`
-    );
-
   }
 
   callNext(queueId: number): Observable<any> {
-
     return this.http.post<any>(
-      `${this.apiUrl}/next?queueId=${queueId}`,
+      `${this.apiUrl}/${queueId}/next`,
       {}
     );
-
   }
 
   complete(ticketId: number): Observable<any> {
-
     return this.http.post<any>(
       `${this.apiUrl}/ticket/${ticketId}/complete`,
       {}
     );
-
   }
 
   skip(ticketId: number): Observable<any> {
-
     return this.http.post<any>(
       `${this.apiUrl}/ticket/${ticketId}/skip`,
       {}
     );
-
   }
 }
